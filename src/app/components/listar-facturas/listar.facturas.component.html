@@ -1,0 +1,31 @@
+<div class="bg-white rounded-xl shadow p-6">
+  <h2 class="text-lg font-semibold mb-4">Listado de facturas</h2>
+
+  <p *ngIf="loading">Cargando…</p>
+  <p *ngIf="!loading && error" class="text-red-600">{{ error }}</p>
+
+  <div *ngIf="!loading && !error">
+    <table class="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
+      <thead class="bg-gray-100">
+        <tr class="text-sm">
+          <th class="p-3">ID</th>
+          <th class="p-3">Cliente</th>
+          <th class="p-3">Fecha</th>
+          <th class="p-3">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of facturas" class="border-t">
+          <td class="p-3">{{ f.id }}</td>
+          <td class="p-3">{{ f.cliente }}</td>
+          <td class="p-3">{{ f.fecha | date:'yyyy-MM-dd' }}</td>
+          <td class="p-3">{{ f.total | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="!facturas.length" class="text-sm text-gray-600 mt-3">
+      No hay facturas.
+    </p>
+  </div>
+</div>

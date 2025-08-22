@@ -1,0 +1,28 @@
+<div class="bg-white rounded-xl shadow p-6">
+  <h2 class="text-lg font-semibold mb-4">Crear factura</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-4">
+    <label class="grid gap-1">
+      <span class="text-sm">Cliente</span>
+      <input type="text" formControlName="cliente" class="border rounded px-3 py-2 w-full" placeholder="Nombre del cliente" />
+    </label>
+
+    <label class="grid gap-1">
+      <span class="text-sm">Fecha</span>
+      <input type="date" formControlName="fecha" class="border rounded px-3 py-2 w-full" />
+    </label>
+
+    <label class="grid gap-1">
+      <span class="text-sm">Total</span>
+      <input type="number" formControlName="total" class="border rounded px-3 py-2 w-full" />
+    </label>
+
+    <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 disabled:opacity-60" [disabled]="loading">
+      {{ loading ? 'Guardando…' : 'Guardar' }}
+    </button>
+
+    <p *ngIf="mensaje" class="text-sm" [class.text-green-700]="mensaje.startsWith('Factura creada')" [class.text-red-600]="mensaje.startsWith('Error')">
+      {{ mensaje }}
+    </p>
+  </form>
+</div>

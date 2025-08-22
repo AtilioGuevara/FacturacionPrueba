@@ -1,0 +1,18 @@
+<div class="bg-white rounded-xl shadow p-6 grid gap-4">
+  <h2 class="text-lg font-semibold">Buscar factura por ID</h2>
+
+  <div class="flex items-center gap-2">
+    <input [(ngModel)]="id" type="text" class="border rounded px-3 py-2" placeholder="ID de la factura" />
+    <button (click)="buscar()" class="bg-blue-600 text-white rounded px-4 py-2">Buscar</button>
+  </div>
+
+  <p *ngIf="loading">Buscando…</p>
+  <p *ngIf="!loading && error" class="text-red-600">{{ error }}</p>
+
+  <div *ngIf="!loading && factura" class="rounded border p-4">
+    <p><span class="font-medium">ID:</span> {{ factura?.id }}</p>
+    <p><span class="font-medium">Cliente:</span> {{ factura?.cliente }}</p>
+    <p><span class="font-medium">Fecha:</span> {{ factura?.fecha | date:'yyyy-MM-dd' }}</p>
+    <p><span class="font-medium">Total:</span> {{ factura?.total | number:'1.2-2' }}</p>
+  </div>
+</div>
