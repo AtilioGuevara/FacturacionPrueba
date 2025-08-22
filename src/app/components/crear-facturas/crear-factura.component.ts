@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { FacturaService } from '../../services/factura.service';
+import { FacturaService, Factura } from '../../services/factura.service';
 
 @Component({
   selector: 'app-crear-factura',
@@ -14,9 +14,21 @@ export class CrearFacturaComponent {
   private facturaService = inject(FacturaService);
 
   form = this.fb.group({
-    cliente: ['', [Validators.required, Validators.minLength(2)]],
-    fecha: ['', Validators.required],
-    total: [0, [Validators.required, Validators.min(0)]]
+    // Información de la empresa (emisor)
+    companyName: ['', [Validators.required, Validators.minLength(2)]],
+    companyNIT: ['', [Validators.required, Validators.minLength(8)]],
+    companyAddress: ['', [Validators.required, Validators.minLength(10)]],
+    companyPhone: ['', [Validators.required, Validators.minLength(8)]],
+    companyEmail: ['', [Validators.required, Validators.email]],
+    
+    // Información del cliente (receptor)
+    clientName: ['', [Validators.required, Validators.minLength(2)]],
+    clientDUI: ['', [Validators.required, Validators.minLength(9)]],
+    clientPhone: [0, [Validators.required, Validators.min(10000000)]],
+    clientEmail: ['', [Validators.required, Validators.email]],
+    
+    // Fecha
+    date: ['', Validators.required]
   });
 
   loading = false;
@@ -29,11 +41,14 @@ export class CrearFacturaComponent {
     }
     this.loading = true;
     this.mensaje = '';
-    const payload = this.form.value as { cliente: string; fecha: string; total: number };
+    const payload = this.form.value as Omit<Factura, 'id'>;
     this.facturaService.crearFactura(payload).subscribe({
       next: (res) => {
-        this.mensaje = `Factura creada (ID: ${res.id ?? '—'})`;
-        this.form.reset({ total: 0 });
+        this.mensaje = `Factura creada exitosamente (ID: ${res.id ?? '—'})`;
+        this.form.reset({ 
+          clientPhone: 0,
+          date: ''
+        });
         this.loading = false;
       },
       error: (err) => {

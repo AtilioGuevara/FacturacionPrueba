@@ -5,9 +5,21 @@ import { environment } from '../../environments/environment';
 
 export interface Factura {
   id?: number;
-  cliente: string;
-  fecha: string; // ISO date
-  total: number;
+  codeGenerator?: string;
+  date: string; // ISO date
+  
+  // Emisor (Empresa)
+  companyName: string;
+  companyNIT: string;
+  companyAddress: string;
+  companyPhone: string;
+  companyEmail: string;
+  
+  // Receptor (Cliente)
+  clientName: string;
+  clientDUI: string;
+  clientPhone: number;
+  clientEmail: string;
 }
 
 @Injectable({ providedIn: 'root' })

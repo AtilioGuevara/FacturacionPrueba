@@ -1,18 +1,120 @@
-<div class="bg-white rounded-xl shadow p-6 grid gap-4">
-  <h2 class="text-lg font-semibold">Buscar factura por ID</h2>
-
-  <div class="flex items-center gap-2">
-    <input [(ngModel)]="id" type="text" class="border rounded px-3 py-2" placeholder="ID de la factura" />
-    <button (click)="buscar()" class="bg-blue-600 text-white rounded px-4 py-2">Buscar</button>
+<div class="bg-white rounded-xl shadow-lg p-6">
+  <!-- Descripción de la funcionalidad -->
+  <div class="mb-6 border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg">
+    <h2 class="text-xl font-semibold text-blue-900 mb-2">🔍 Buscar Factura por ID</h2>
+    <p class="text-blue-700 text-sm">
+      Esta función te permite localizar una factura específica utilizando su número de identificación único (ID). 
+      Simplemente ingresa el ID de la factura que deseas consultar y obtén todos sus detalles al instante.
+    </p>
+    <p class="text-blue-600 text-xs mt-2 font-medium">
+      💡 Tip: El ID de factura es un número que se asigna automáticamente al crear cada factura.
+    </p>
   </div>
 
-  <p *ngIf="loading">Buscando…</p>
-  <p *ngIf="!loading && error" class="text-red-600">{{ error }}</p>
+  <div class="grid gap-4">
+    <div class="flex items-center gap-3">
+      <input [(ngModel)]="id" 
+             type="text" 
+             class="flex-1 border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+             placeholder="Ej: 12345" />
+      <button (click)="buscar()" 
+              class="bg-blue-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+              [disabled]="loading">
+        {{ loading ? 'Buscando...' : 'Buscar' }}
+      </button>
+    </div>
 
-  <div *ngIf="!loading && factura" class="rounded border p-4">
-    <p><span class="font-medium">ID:</span> {{ factura?.id }}</p>
-    <p><span class="font-medium">Cliente:</span> {{ factura?.cliente }}</p>
-    <p><span class="font-medium">Fecha:</span> {{ factura?.fecha | date:'yyyy-MM-dd' }}</p>
-    <p><span class="font-medium">Total:</span> {{ factura?.total | number:'1.2-2' }}</p>
+    <p *ngIf="loading" class="text-blue-600 flex items-center gap-2">
+      <span class="animate-spin">⏳</span> Buscando factura...
+    </p>
+    
+    <div *ngIf="!loading && error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <p class="text-red-600 flex items-center gap-2">
+        <span>❌</span> {{ error }}
+      </p>
+    </div>
+
+    <div *ngIf="!loading && factura" class="bg-green-50 border border-green-200 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-green-800 mb-6 flex items-center gap-2">
+        <span>✅</span> Factura Encontrada
+      </h3>
+      
+      <!-- Información General -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-lg p-4 border">
+          <p class="text-sm text-gray-500">ID de Factura</p>
+          <p class="font-semibold text-lg">{{ factura.id }}</p>
+        </div>
+        <div class="bg-white rounded-lg p-4 border">
+          <p class="text-sm text-gray-500">Código Generador</p>
+          <p class="font-semibold text-lg">{{ factura.codeGenerator || 'N/A' }}</p>
+        </div>
+      </div>
+
+      <!-- Información del Emisor -->
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <h4 class="text-md font-semibold text-blue-900 mb-3 flex items-center gap-2">
+          <span>🏢</span> Información del Emisor
+        </h4>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Empresa</p>
+            <p class="font-medium">{{ factura.companyName }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">NIT</p>
+            <p class="font-medium">{{ factura.companyNIT }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Dirección</p>
+            <p class="font-medium">{{ factura.companyAddress }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Teléfono</p>
+            <p class="font-medium">{{ factura.companyPhone }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border md:col-span-2">
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="font-medium text-blue-600">{{ factura.companyEmail }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del Receptor -->
+      <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+        <h4 class="text-md font-semibold text-green-900 mb-3 flex items-center gap-2">
+          <span>👤</span> Información del Receptor
+        </h4>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Cliente</p>
+            <p class="font-medium">{{ factura.clientName }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">DUI</p>
+            <p class="font-medium">{{ factura.clientDUI }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Teléfono</p>
+            <p class="font-medium">{{ factura.clientPhone }}</p>
+          </div>
+          <div class="bg-white rounded-lg p-3 border">
+            <p class="text-sm text-gray-500">Email</p>
+            <p class="font-medium text-green-600">{{ factura.clientEmail }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fecha -->
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <h4 class="text-md font-semibold text-yellow-900 mb-3 flex items-center gap-2">
+          <span>📅</span> Fecha de Emisión
+        </h4>
+        <div class="bg-white rounded-lg p-3 border inline-block">
+          <p class="text-sm text-gray-500">Fecha</p>
+          <p class="font-semibold text-lg">{{ factura.date | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FacturaService, Factura } from '../../services/factura.service';
 
 @Component({
   selector: 'app-listar-facturas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './listar.facturas.component.html'
 })
 export class ListarFacturasComponent {

@@ -1,28 +1,175 @@
-<div class="bg-white rounded-xl shadow p-6">
-  <h2 class="text-lg font-semibold mb-4">Crear factura</h2>
-
-  <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-4">
-    <label class="grid gap-1">
-      <span class="text-sm">Cliente</span>
-      <input type="text" formControlName="cliente" class="border rounded px-3 py-2 w-full" placeholder="Nombre del cliente" />
-    </label>
-
-    <label class="grid gap-1">
-      <span class="text-sm">Fecha</span>
-      <input type="date" formControlName="fecha" class="border rounded px-3 py-2 w-full" />
-    </label>
-
-    <label class="grid gap-1">
-      <span class="text-sm">Total</span>
-      <input type="number" formControlName="total" class="border rounded px-3 py-2 w-full" />
-    </label>
-
-    <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 disabled:opacity-60" [disabled]="loading">
-      {{ loading ? 'Guardando…' : 'Guardar' }}
-    </button>
-
-    <p *ngIf="mensaje" class="text-sm" [class.text-green-700]="mensaje.startsWith('Factura creada')" [class.text-red-600]="mensaje.startsWith('Error')">
-      {{ mensaje }}
+<div class="bg-white rounded-xl shadow-lg p-6">
+  <!-- Descripción de la funcionalidad -->
+  <div class="mb-6 border-l-4 border-green-500 bg-green-50 p-4 rounded-r-lg">
+    <h2 class="text-xl font-semibold text-green-900 mb-2">➕ Crear Nueva Factura</h2>
+    <p class="text-green-700 text-sm">
+      Utiliza este formulario para generar una nueva factura de manera rápida y sencilla. 
+      Completa la información del cliente, selecciona la fecha de emisión y especifica el monto total. 
+      El sistema asignará automáticamente un ID único a tu factura.
     </p>
+    <p class="text-green-600 text-xs mt-2 font-medium">
+      💡 Tip: Todos los campos son obligatorios. Asegúrate de verificar los datos antes de guardar.
+    </p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6">
+    
+    <!-- Información de la Empresa (Emisor) -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <h3 class="text-lg font-semibold text-blue-900 mb-4 flex items-center gap-2">
+        <span>🏢</span> Información del Emisor (Empresa)
+      </h3>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Nombre de la Empresa</span>
+          <input type="text" 
+                 formControlName="companyName" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 placeholder="Ej: Empresa ABC S.A." />
+          <span *ngIf="form.get('companyName')?.touched && form.get('companyName')?.errors" 
+                class="text-red-500 text-xs">El nombre de la empresa es requerido</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">NIT</span>
+          <input type="text" 
+                 formControlName="companyNIT" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 placeholder="Ej: 1234567890123" />
+          <span *ngIf="form.get('companyNIT')?.touched && form.get('companyNIT')?.errors" 
+                class="text-red-500 text-xs">El NIT es requerido</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Dirección</span>
+          <input type="text" 
+                 formControlName="companyAddress" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 placeholder="Ej: Av. Principal #123, Ciudad" />
+          <span *ngIf="form.get('companyAddress')?.touched && form.get('companyAddress')?.errors" 
+                class="text-red-500 text-xs">La dirección es requerida</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Teléfono</span>
+          <input type="tel" 
+                 formControlName="companyPhone" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 placeholder="Ej: +503 1234-5678" />
+          <span *ngIf="form.get('companyPhone')?.touched && form.get('companyPhone')?.errors" 
+                class="text-red-500 text-xs">El teléfono es requerido</span>
+        </label>
+
+        <label class="grid gap-2 md:col-span-2">
+          <span class="text-sm font-medium text-gray-700">Email</span>
+          <input type="email" 
+                 formControlName="companyEmail" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                 placeholder="Ej: contacto@empresa.com" />
+          <span *ngIf="form.get('companyEmail')?.touched && form.get('companyEmail')?.errors" 
+                class="text-red-500 text-xs">
+            <span *ngIf="form.get('companyEmail')?.errors?.['required']">El email es requerido</span>
+            <span *ngIf="form.get('companyEmail')?.errors?.['email']">Formato de email inválido</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Información del Cliente (Receptor) -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+      <h3 class="text-lg font-semibold text-green-900 mb-4 flex items-center gap-2">
+        <span>👤</span> Información del Receptor (Cliente)
+      </h3>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Nombre del Cliente</span>
+          <input type="text" 
+                 formControlName="clientName" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                 placeholder="Ej: Juan Pérez" />
+          <span *ngIf="form.get('clientName')?.touched && form.get('clientName')?.errors" 
+                class="text-red-500 text-xs">El nombre del cliente es requerido</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">DUI</span>
+          <input type="text" 
+                 formControlName="clientDUI" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                 placeholder="Ej: 12345678-9" />
+          <span *ngIf="form.get('clientDUI')?.touched && form.get('clientDUI')?.errors" 
+                class="text-red-500 text-xs">El DUI es requerido</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Teléfono</span>
+          <input type="number" 
+                 formControlName="clientPhone" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                 placeholder="Ej: 78901234" />
+          <span *ngIf="form.get('clientPhone')?.touched && form.get('clientPhone')?.errors" 
+                class="text-red-500 text-xs">El teléfono debe ser válido</span>
+        </label>
+
+        <label class="grid gap-2">
+          <span class="text-sm font-medium text-gray-700">Email del Cliente</span>
+          <input type="email" 
+                 formControlName="clientEmail" 
+                 class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-transparent" 
+                 placeholder="Ej: cliente@email.com" />
+          <span *ngIf="form.get('clientEmail')?.touched && form.get('clientEmail')?.errors" 
+                class="text-red-500 text-xs">
+            <span *ngIf="form.get('clientEmail')?.errors?.['required']">El email es requerido</span>
+            <span *ngIf="form.get('clientEmail')?.errors?.['email']">Formato de email inválido</span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Fecha de Emisión -->
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <h3 class="text-lg font-semibold text-yellow-900 mb-4 flex items-center gap-2">
+        <span>📅</span> Fecha de Emisión
+      </h3>
+      
+      <label class="grid gap-2 max-w-md">
+        <span class="text-sm font-medium text-gray-700">Fecha</span>
+        <input type="date" 
+               formControlName="date" 
+               class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-yellow-500 focus:border-transparent" />
+        <span *ngIf="form.get('date')?.touched && form.get('date')?.errors" 
+              class="text-red-500 text-xs">La fecha es requerida</span>
+      </label>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <button type="submit" 
+              class="flex-1 bg-green-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2" 
+              [disabled]="loading || form.invalid">
+        <span>💾</span>
+        {{ loading ? 'Guardando...' : 'Crear Factura' }}
+      </button>
+      
+      <button type="button" 
+              (click)="form.reset({clientPhone: 0})"
+              class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
+        Limpiar
+      </button>
+    </div>
+
+    <div *ngIf="mensaje" class="mt-4 p-4 rounded-lg" 
+         [class.bg-green-50]="mensaje.startsWith('Factura creada')" 
+         [class.border-green-200]="mensaje.startsWith('Factura creada')"
+         [class.bg-red-50]="mensaje.startsWith('Error')" 
+         [class.border-red-200]="mensaje.startsWith('Error')">
+      <p class="flex items-center gap-2"
+         [class.text-green-700]="mensaje.startsWith('Factura creada')" 
+         [class.text-red-600]="mensaje.startsWith('Error')">
+        <span>{{ mensaje.startsWith('Factura creada') ? '✅' : '❌' }}</span>
+        {{ mensaje }}
+      </p>
+    </div>
   </form>
 </div>
