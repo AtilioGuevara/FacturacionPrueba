@@ -25,17 +25,16 @@ export interface Factura {
 @Injectable({ providedIn: 'root' })
 export class FacturaService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}/facturas`;
 
   crearFactura(data: Omit<Factura, 'id'>): Observable<Factura> {
-    return this.http.post<Factura>(this.baseUrl, data);
+    return this.http.post<Factura>(environment.crearFacturaUrl, data);
   }
 
   listarFacturas(): Observable<Factura[]> {
-    return this.http.get<Factura[]>(this.baseUrl);
+    return this.http.get<Factura[]>(environment.listarFacturaUrl);
   }
 
   buscarFacturaPorId(id: number | string): Observable<Factura> {
-    return this.http.get<Factura>(`${this.baseUrl}/${id}`);
+    return this.http.get<Factura>(`${environment.buscarFacturaUrl}/${id}`);
   }
 }
